@@ -1,6 +1,6 @@
 import { Outlet, Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
-import { PiggyBank, LogOut, User, Plus } from "lucide-react";
+import { PiggyBank, LogOut, User, Plus, Shield } from "lucide-react";
 
 export default function Layout() {
   const { profile, signOut } = useAuth();
@@ -21,6 +21,16 @@ export default function Layout() {
           </Link>
 
           <div className="flex items-center gap-3">
+            {profile?.is_superadmin && (
+              <Link
+                to="/admin"
+                className="p-2 text-gray-500 hover:text-brand-600 transition"
+                title="Panel de Administración"
+              >
+                <Shield className="w-5 h-5" />
+              </Link>
+            )}
+
             <Link
               to="/create"
               className="inline-flex items-center gap-1.5 bg-brand-600 text-white text-sm font-medium px-3 py-1.5 rounded-lg hover:bg-brand-700 transition"

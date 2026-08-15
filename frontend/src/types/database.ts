@@ -17,6 +17,7 @@ export interface Profile {
   email: string | null;
   phone: string | null;
   avatar_url: string | null;
+  is_superadmin: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -145,6 +146,18 @@ export interface Database {
       join_alcanzia_by_token: {
         Args: { p_token: string };
         Returns: string;
+      };
+      get_superadmin_users: {
+        Args: Record<PropertyKey, never>;
+        Returns: { id: string; full_name: string | null; email: string | null; phone: string | null; created_at: string }[];
+      };
+      get_superadmin_alcanzias: {
+        Args: Record<PropertyKey, never>;
+        Returns: { id: string; title: string; goal_amount: number; currency: string; is_active: boolean; balance: number; last_movement_date: string | null }[];
+      };
+      toggle_alcanzia_active: {
+        Args: { p_alcanzia_id: string; p_is_active: boolean };
+        Returns: void;
       };
     };
   };

@@ -8,6 +8,7 @@ import AlcanziaDetail from "./pages/AlcanziaDetail";
 import CreateAlcanzia from "./pages/CreateAlcanzia";
 import JoinAlcanzia from "./pages/JoinAlcanzia";
 import Profile from "./pages/Profile";
+import SuperAdminDashboard from "./pages/SuperAdminDashboard";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
@@ -42,6 +43,7 @@ export default function App() {
         <Route path="alcanzia/:id" element={<AlcanziaDetail />} />
         <Route path="join/:token" element={<JoinAlcanzia />} />
         <Route path="profile" element={<Profile />} />
+        <Route path="admin" element={<SuperAdminDashboard />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
