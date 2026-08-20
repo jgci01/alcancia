@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Navigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import { useAuth } from "../contexts/AuthContext";
 
 export default function CreateAlcanzia() {
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const navigate = useNavigate();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -47,6 +47,10 @@ export default function CreateAlcanzia() {
 
     navigate(`/alcanzia/${(data as any).id}`);
   };
+
+  if (!profile?.is_superadmin) {
+    return <Navigate to="/" replace />;
+  }
 
   return (
     <div className="max-w-lg mx-auto">

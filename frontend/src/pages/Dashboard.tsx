@@ -12,7 +12,7 @@ interface AlcanziaWithBalance extends Alcanzia {
 }
 
 export default function Dashboard() {
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const [alcanzias, setAlcanzias] = useState<AlcanziaWithBalance[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -90,13 +90,19 @@ export default function Dashboard() {
         <div className="text-center py-16 bg-white rounded-2xl border border-dashed border-gray-300">
           <PiggyBank className="w-16 h-16 text-gray-300 mx-auto mb-4" />
           <h2 className="text-lg font-medium text-gray-700 mb-2">Aún no tienes alcanzias</h2>
-          <p className="text-gray-500 mb-6">Crea una o únete con un link de invitación</p>
-          <Link
-            to="/create"
-            className="inline-flex items-center gap-2 bg-brand-600 text-white px-5 py-2.5 rounded-lg hover:bg-brand-700 transition"
-          >
-            Crear mi primera alcanzia
-          </Link>
+          <p className="text-gray-500 mb-6">
+            {profile?.is_superadmin 
+              ? "Crea una o únete con un link de invitación" 
+              : "Únete a una mediante un link de invitación"}
+          </p>
+          {profile?.is_superadmin && (
+            <Link
+              to="/create"
+              className="inline-flex items-center gap-2 bg-brand-600 text-white px-5 py-2.5 rounded-lg hover:bg-brand-700 transition"
+            >
+              Crear mi primera alcanzia
+            </Link>
+          )}
         </div>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2">

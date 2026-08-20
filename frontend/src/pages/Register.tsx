@@ -24,7 +24,14 @@ export default function Register() {
       setError(error.message);
     } else {
       setSuccess(true);
-      setTimeout(() => navigate("/"), 1500);
+      setTimeout(() => {
+        const pendingToken = localStorage.getItem("pendingJoinToken");
+        if (pendingToken) {
+          navigate(`/join/${pendingToken}`);
+        } else {
+          navigate("/");
+        }
+      }, 1500);
     }
   };
 
@@ -72,11 +79,12 @@ export default function Register() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Teléfono (opcional)</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Teléfono</label>
               <input
                 type="tel"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
+                required
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none"
                 placeholder="+54 9 11 1234-5678"
               />

@@ -38,6 +38,7 @@ export default function AlcanziaDetail() {
   const [withdrawDesc, setWithdrawDesc] = useState("");
   const [withdrawing, setWithdrawing] = useState(false);
   const [activeTab, setActiveTab] = useState<"ranking" | "historial" | "retiros" | "miembros">("ranking");
+  const [paymentUrl, setPaymentUrl] = useState<string | null>(null);
 
   const formatMoney = (n: number, currency = "ARS") =>
     new Intl.NumberFormat("es-AR", { style: "currency", currency }).format(n);
@@ -181,9 +182,9 @@ export default function AlcanziaDetail() {
         return;
       }
 
-      // Redirigir a Mercado Pago
+      // Mostrar QR o enlace de pago en lugar de redirigir inmediatamente
       const url = data.sandbox_init_point || data.init_point;
-      window.location.href = url;
+      setPaymentUrl(url);
     } catch (err) {
       console.error(err);
       alert("Error de conexión");
@@ -305,27 +306,61 @@ export default function AlcanziaDetail() {
           <DollarSign className="w-5 h-5 text-brand-600" />
           Hacer un aporte
         </h2>
-        <div className="flex flex-col sm:flex-row gap-3">
-          <input
-            type="number"
-            value={contributeAmount}
-            onChange={(e) => setContributeAmount(e.target.value)}
-            min="1000"
-            step="100"
-            placeholder="Monto mínimo $1.000"
-            className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none"
-          />
-          <button
-            onClick={handleContribute}
-            disabled={contributing}
-            className="bg-brand-600 text-white font-medium px-6 py-2 rounded-lg hover:bg-brand-700 transition disabled:opacity-50"
-          >
-            {contributing ? "Procesando..." : "Pagar con Mercado Pago"}
-          </button>
-        </div>
-        <p className="text-xs text-gray-500 mt-2">
-          Las comisiones de Mercado Pago las abona el aportante en cada transacción.
-        </p>
+        {!paymentUrl ? (
+          <>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <input
+                type="number"
+                value={contributeAmount}
+                onChange={(e) => setContributeAmount(e.target.value)}
+                min="1000"
+                step="100"
+                placeholder="Monto mínimo $1.000"
+                className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none"
+              />
+              <button
+                onClick={handleContribute}
+                disabled={contributing}
+                className="bg-brand-600 text-white font-medium px-6 py-2 rounded-lg hover:bg-brand-700 transition disabled:opacity-50"
+              >
+                {contributing ? "Procesando..." : "Colaborar"}
+              </button>
+            </div>
+            <p className="text-xs text-gray-500 mt-2">
+              Las comisiones de Mercado Pago las abona el aportante en cada transacción.
+            </p>
+          </>
+        ) : (
+          <div className="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-xl border border-gray-200">
+            <h3 className="font-medium text-gray-800 mb-4">Escanea el QR para pagar</h3>
+            <div className="bg-white p-3 rounded-xl shadow-sm border border-gray-100 mb-4">
+              <img
+                src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(paymentUrl)}`}
+                alt="QR de Pago"
+                className="w-48 h-48"
+              />
+            </div>
+            <p className="text-sm text-gray-500 mb-4 text-center">
+              O si estás desde tu celular, haz clic en el botón de abajo.
+            </p>
+            <div className="flex gap-3">
+              <a
+                href={paymentUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="bg-blue-500 text-white px-5 py-2 rounded-lg font-medium hover:bg-blue-600 transition"
+              >
+                Ir a Mercado Pago
+              </a>
+              <button
+                onClick={() => setPaymentUrl(null)}
+                className="bg-gray-200 text-gray-700 px-5 py-2 rounded-lg font-medium hover:bg-gray-300 transition"
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Tabs */}

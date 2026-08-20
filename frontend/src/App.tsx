@@ -30,6 +30,7 @@ export default function App() {
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
+      <Route path="/join/:token" element={<JoinAlcanzia />} />
       <Route
         path="/"
         element={
@@ -41,7 +42,6 @@ export default function App() {
         <Route index element={<Dashboard />} />
         <Route path="create" element={<CreateAlcanzia />} />
         <Route path="alcanzia/:id" element={<AlcanziaDetail />} />
-        <Route path="join/:token" element={<JoinAlcanzia />} />
         <Route path="profile" element={<Profile />} />
         <Route path="admin" element={<SuperAdminDashboard />} />
       </Route>

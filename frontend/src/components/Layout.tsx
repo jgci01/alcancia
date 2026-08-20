@@ -31,13 +31,15 @@ export default function Layout() {
               </Link>
             )}
 
-            <Link
-              to="/create"
-              className="inline-flex items-center gap-1.5 bg-brand-600 text-white text-sm font-medium px-3 py-1.5 rounded-lg hover:bg-brand-700 transition"
-            >
-              <Plus className="w-4 h-4" />
-              Nueva
-            </Link>
+            {profile?.is_superadmin && (
+              <Link
+                to="/create"
+                className="inline-flex items-center gap-1.5 bg-brand-600 text-white text-sm font-medium px-3 py-1.5 rounded-lg hover:bg-brand-700 transition"
+              >
+                <Plus className="w-4 h-4" />
+                Nueva
+              </Link>
+            )}
 
             <Link
               to="/profile"

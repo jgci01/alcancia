@@ -5,13 +5,19 @@ import { useAuth } from "../contexts/AuthContext";
 
 export default function JoinAlcanzia() {
   const { token } = useParams<{ token: string }>();
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const [status, setStatus] = useState<"loading" | "success" | "error">("loading");
   const [message, setMessage] = useState("");
 
   useEffect(() => {
-    if (!token || !user) return;
+    if (authLoading || !token) return;
+
+    if (!user) {
+      localStorage.setItem("pendingJoinToken", token);
+      navigate("/register");
+      return;
+    }
 
     const join = async () => {
       const { data, error } = await supabase.rpc("join_alcanzia_by_token", {
@@ -26,11 +32,12 @@ export default function JoinAlcanzia() {
 
       setStatus("success");
       setMessage("¡Te uniste correctamente!");
+      localStorage.removeItem("pendingJoinToken");
       setTimeout(() => navigate(`/alcanzia/${data}`), 1200);
     };
 
     join();
-  }, [token, user, navigate]);
+  }, [token, user, authLoading, navigate]);
 
   return (
     <div className="max-w-md mx-auto text-center py-20">
