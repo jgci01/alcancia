@@ -196,7 +196,7 @@ export default function AlcanziaDetail() {
       }
 
       // Mostrar QR o enlace de pago en lugar de redirigir inmediatamente
-      const url = data.sandbox_init_point || data.init_point;
+      const url = data.init_point;
       setPaymentUrl(url);
       if (data.contribution_id) {
         setPendingContributionId(data.contribution_id);
