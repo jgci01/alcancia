@@ -39,6 +39,7 @@ export default function AlcanziaDetail() {
   const [withdrawing, setWithdrawing] = useState(false);
   const [activeTab, setActiveTab] = useState<"ranking" | "historial" | "retiros" | "miembros">("ranking");
   const [paymentUrl, setPaymentUrl] = useState<string | null>(null);
+  const [pendingContributionId, setPendingContributionId] = useState<string | null>(null);
 
   const formatMoney = (n: number, currency = "ARS") =>
     new Intl.NumberFormat("es-AR", { style: "currency", currency }).format(n);
@@ -126,7 +127,19 @@ export default function AlcanziaDetail() {
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "contributions", filter: `alcanzia_id=eq.${id}` },
-        () => loadData()
+        (payload) => {
+          if (
+            payload.eventType === "UPDATE" &&
+            payload.new.status === "approved" &&
+            payload.new.id === pendingContributionId
+          ) {
+            setPaymentUrl(null);
+            setPendingContributionId(null);
+            setContributeAmount("");
+            setPaymentMsg("¡Aporte recibido con éxito! Muchas gracias.");
+          }
+          loadData();
+        }
       )
       .on(
         "postgres_changes",
@@ -138,7 +151,7 @@ export default function AlcanziaDetail() {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [id, loadData]);
+  }, [id, loadData, pendingContributionId]);
 
   // Mensaje de pago desde URL
   useEffect(() => {
@@ -185,6 +198,9 @@ export default function AlcanziaDetail() {
       // Mostrar QR o enlace de pago en lugar de redirigir inmediatamente
       const url = data.sandbox_init_point || data.init_point;
       setPaymentUrl(url);
+      if (data.contribution_id) {
+        setPendingContributionId(data.contribution_id);
+      }
     } catch (err) {
       console.error(err);
       alert("Error de conexión");

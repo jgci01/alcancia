@@ -1,0 +1,17 @@
+[project]
+id = "alcanzia-digital"
+
+[api]
+enabled = true
+
+[db]
+port = 54322
+
+[studio]
+enabled = true
+
+[auth]
+enabled = true
+
+[functions]
+verify_jwt = false
